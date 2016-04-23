@@ -1,0 +1,69 @@
+.chatwindow{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0
+}
+
+.chat .join,.chatwindow .chat-messages{
+    top:32px;
+    position:absolute
+}
+
+
+.chat{
+    position:absolute;
+    height:100%;
+    width:80%
+}
+
+.roster{
+    position:absolute;
+    height:100%;
+    width:20%;
+    right:0
+
+}
+
+.chat .topic{
+    position:absolute;
+    height:32px;
+    font-size:20px
+}
+
+.chatwindow .chat-messages{
+    width:100%;
+    left:0;
+    right:0;
+    bottom:32px;
+    background:#EEE
+}
+
+.chatwindow .chat-input{
+    position:absolute;
+    display:flex;
+    width:100%;
+    left:0;
+    right:0;
+    height:32px;
+    bottom:0
+}
+
+.chat-input input{
+    flex:1
+}
+
+.joined .join,.unjoined .chat-input,.unjoined .chat-messages{
+    display:none
+}
+
+.chat-messages li{
+    display:block
+
+}
+
+.chat-messages .joined{
+    font-style:italic
+
+}
