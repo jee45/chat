@@ -148,7 +148,7 @@ def enterchat(data):
 
 
     #send to everyone in the room
-    io.emit("user-joined", { "name": data['name']}, room=data['room']  )
+    io.emit("user-joined", { "name": data['name']}  )
 
 
     print("rooms", flask_socketio.rooms() )
@@ -169,7 +169,7 @@ def chat(data):
     room= data['room']
     message = data['message']
 
-    io.emit("new-chat",  { 'sender': sender, 'message': message } , room=room )
+    io.emit("new-chat",  { 'sender': sender, 'message': message }   )
 
 
 
