@@ -81,11 +81,8 @@ clients = []
 @io.on('connect' )
 def connect():
     #this will mean that the 2nd page is loaded.
-
     print("rooms", flask_socketio.rooms() )
     print(rooms)
-    # for x in dir(flask_socketio):
-    #     print(x)
 
 
     print('connected')
@@ -111,7 +108,7 @@ def enterchat(data):
     if not flask.session['sid']:
         # give them a new  one
         print('new session')
-        flask.session['sid'] =  base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
+        flask.session['sid'] =  "user"+base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
     else:
         print('already in session')
 
@@ -138,10 +135,11 @@ def enterchat(data):
 
 
     #send to everyone in the room
-    io.emit("user-joined", { "name": data['name']}, room =data['room']  )
+    io.emit("user-joined", { "name": data['name']} )
 
     print("rooms", flask_socketio.rooms() )
     print(rooms)
+
 
 
 
