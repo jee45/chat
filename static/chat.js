@@ -3,7 +3,7 @@
  */
 (function(n, e) {
     //var a = io();
-    var a = io.connect('http://' + document.domain + ':' + location.port);
+
 
     var o = $(".chatwindow");
 
@@ -11,6 +11,8 @@
 
     var t = o.attr("data-key");
     var s = o.attr("data-sid");
+
+    var a = io.connect( );
 
 
 
@@ -92,7 +94,10 @@
 
 
     a.on("new-chat", function(n) {
+        console.log('enterying new chat');
         $("<li>").addClass("message").append($("<span>").addClass("user").text(n.sender)).append(": ").append($("<span>").addClass("text").text(n.message)).appendTo($(".chat-messages"))
+
+
     });
 
 

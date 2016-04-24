@@ -23,6 +23,8 @@ def index():
 	return flask.render_template('front.html')
 
 
+
+
 @app.route('/new-chat', methods=['POST'])
 def newchat():
 
@@ -80,8 +82,12 @@ clients = []
 
 @io.on('connect' )
 def connect():
+
+
     #this will mean that the 2nd page is loaded.
+    print("namespace" )
     print("rooms", flask_socketio.rooms() )
+
     print(rooms)
 
 
@@ -97,6 +103,8 @@ def connect():
 @io.on('enterchat' )
 def enterchat(data):
 
+
+
     # data:
     # name, roomid, sid
     print('enter session : ' , end='')
@@ -105,7 +113,7 @@ def enterchat(data):
 
 
     # if the user doesnt have a session id yet,
-    if not flask.session['sid']:
+    if 'sid' not in flask.session :
         # give them a new  one
         print('new session')
         flask.session['sid'] =  "user"+base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
@@ -121,7 +129,12 @@ def enterchat(data):
     if data['room'] in rooms:
         # join it
         print(data['room'])
-        flask_socketio.join_room(data['room'])
+
+        if data['room'] not in flask_socketio.rooms():
+
+            flask_socketio.join_room(data['room'])
+        else:
+            print('.................... youre already in this room' )
 
 
     else: # otherwise
@@ -135,7 +148,8 @@ def enterchat(data):
 
 
     #send to everyone in the room
-    io.emit("user-joined", { "name": data['name']} )
+    io.emit("user-joined", { "name": data['name']}, room=data['room']  )
+
 
     print("rooms", flask_socketio.rooms() )
     print(rooms)
@@ -144,12 +158,18 @@ def enterchat(data):
 
 
 
-@io.on('chat' )
+@io.on('chat')
 def chat(data):
 
+
+
+    print("chat data",data)
+
     sender = names[data['sid']]
+    room= data['room']
     message = data['message']
-    io.emit("new-chat",  { 'sender': sender, 'message': message } )
+
+    io.emit("new-chat",  { 'sender': sender, 'message': message } , room=room )
 
 
 
