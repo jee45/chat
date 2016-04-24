@@ -62,6 +62,7 @@
         console.log("connected");
 
         var n = o.attr("data-nick");
+
         if (n) {
             console.log("re-joining room %s", t);
             a.emit("enterchat", {
@@ -69,6 +70,7 @@
                 room: t,
                 name: n
             })
+
         }
     });
 

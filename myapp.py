@@ -3,6 +3,7 @@ import uuid
 
 import flask
 #import flask.ext.socketio
+
 import flask_socketio
 
 
@@ -19,10 +20,12 @@ app.config['SECRET_KEY'] = 'bollocks!'
 
 io =   flask_socketio.SocketIO(app)
 
-rooms = {}
+urlkeys = {}
+
+rooms={}
 
 
-names={}
+
 
 @app.route('/')
 def index():
@@ -49,10 +52,7 @@ def newchat():
 
     # store the hurl hash as the key, and the topic as the value in the rooms dict
     keyFromUrl = "room"+keyFromUrl
-    rooms [keyFromUrl]= topic
-
-
-
+    urlkeys [keyFromUrl]= topic
 
     # go to the url
     return flask.redirect('/'+keyFromUrl)
@@ -67,15 +67,14 @@ def back(keyFromUrl):
 
     flask.session['room']  = keyFromUrl
 
-    print(
-    flask.session['room'] )
+    print( flask.session['room'] )
 
     #get the topic from the key
-    if keyFromUrl in rooms.keys():
-        topic =  rooms [keyFromUrl]
+    if keyFromUrl in urlkeys.keys():
+        topic =  urlkeys [keyFromUrl]
 
     else:
-        topic =  rooms [keyFromUrl] = "no room was created for this yet"
+        topic =  urlkeys [keyFromUrl] = "no room was created for this yet"
 
     return flask.render_template('back.html', urlKey=keyFromUrl , topic=topic)
 
@@ -94,40 +93,57 @@ def connect():
 
 
 
-
-
-
-
-
 @io.on('enterchat' )
 def enterchat(data):
 
 
 
+    print('entering chat')
     # data:
     # name, roomid, sid
 
-    flask.session['sid'] = data['sid']
+    sid = flask_socketio.rooms()
+    print('........ ',sid)
+    flask.session['sid'] = sid[0]
     flask.session['name'] = data['name']
-
-
     flask.session['room']  = data['room']
 
 
 
-    if flask.session['room'] not in  flask_socketio.rooms():
+
+    if flask.session['room'] not in flask_socketio.rooms():
+
+
         flask_socketio.join_room(flask.session['room'])
 
 
-        #send to the user who just joined
-        io.emit("joined", { "name": data["name"]} )
+        if flask.session['room'] in rooms:
+            rooms[ flask.session['room']].append(flask.session['name'])
+        else:
+            rooms[ flask.session['room']] = [flask.session['name']]
+
+
+        print("............", rooms)
+
+
+        #get all the users in this room .
+        #for each user in this room,
+        print('sid: ',flask.session['sid'])
+        for each in rooms[ flask.session['room']]:
+
+            if each != flask.session['name']:
+                io.emit("user-joined", { "name": each} , room=flask.session['sid'])
+
+            # emit a user joined to only me.
+
+        io.emit("joined", { "name": each} , room=flask.session['sid'])
 
         # for eachuser in theRoom:
         #     io.emit("user-joined", { "name": data['name']} , room=flask.session['sid'] )
 
 
         #send to everyone in the room
-        io.emit("user-joined", { "name": data['name']}  )
+        io.emit("user-joined", { "name": data['name']}, room=flask.session['room'], broadcast=False )
 
 
 
@@ -144,11 +160,11 @@ def chat(data):
 
 
     sender = flask.session['name']
-    room= flask.session['name']
+    room= flask.session['room']
     message = data['message']
 
 
-    io.emit("new-chat",  { 'sender': sender, 'message': message }  )
+    io.emit("new-chat",  { 'sender': sender, 'message': message } , room=room )
 
 
 
