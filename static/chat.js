@@ -2,13 +2,18 @@
  * Created by ad on 4/22/16.
  */
 (function(n, e) {
-    var a = io();
+    //var a = io();
+    var a = io.connect('http://' + document.domain + ':' + location.port);
 
     var o = $(".chatwindow");
 
 
+
     var t = o.attr("data-key");
     var s = o.attr("data-sid");
+
+
+
 
     $(".join-form").on("submit", function(n) {
         n.preventDefault();
@@ -29,6 +34,9 @@
 
 
 
+
+
+
     $(".chat-input").on("submit", function(n) {
         n.preventDefault();
         var e = $("#in-msg").val().trim();
@@ -43,6 +51,9 @@
 
         $("#in-msg").val("")
     });
+
+
+
 
 
     a.on("connect", function() {
@@ -60,6 +71,9 @@
     });
 
 
+
+
+
     a.on("joined", function(n) {
         console.log(n);
         var e = n.name;
@@ -69,24 +83,29 @@
         o.removeClass("unjoined")
     });
 
-    a.on("crap", function(n) {
-            console.log("something is definately happening");
 
-            console.log(n);
 
-        }
 
-    );
+
+
+
 
 
     a.on("new-chat", function(n) {
         $("<li>").addClass("message").append($("<span>").addClass("user").text(n.sender)).append(": ").append($("<span>").addClass("text").text(n.message)).appendTo($(".chat-messages"))
     });
 
+
+
+
     a.on("user-joined", function(n) {
         $("<li>").addClass("joined").append($("<span>").addClass("user").text(n.name)).append(" has joined the chat").appendTo($(".chat-messages"));
         $("<li>").text(n.name).appendTo($(".roster-list"))
     });
+
+
+
+
     e[""] = n
 })({}, function() {
     return this
