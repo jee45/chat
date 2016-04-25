@@ -2,8 +2,8 @@
  * Created by ad on 4/22/16.
  */
 (function(n, e) {
-    //var a = io();
-    var io = io( serverUri, {'transports': ['websocket', 'polling']});
+    var a = io();
+
 
     var o = $(".chatwindow");
 
