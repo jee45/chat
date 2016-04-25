@@ -3,7 +3,7 @@
  */
 (function(n, e) {
     //var a = io();
-
+    var io = io( serverUri, {'transports': ['websocket', 'polling']});
 
     var o = $(".chatwindow");
 
@@ -12,7 +12,6 @@
     var t = o.attr("data-key");
     var s = o.attr("data-sid");
 
-    var a = io();
 
 
 

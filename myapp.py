@@ -15,16 +15,10 @@ import flask_socketio
 
 app = flask.Flask(__name__)
 app.debug = True
-
 app.config['SECRET_KEY'] = 'bollocks!'
-
 io =   flask_socketio.SocketIO(app)
-
 urlkeys = {}
-
 rooms={}
-
-
 
 
 @app.route('/')
@@ -71,6 +65,7 @@ def back(keyFromUrl):
 
     print( flask.session['room'] )
 
+    print("urlkeys ****** ",urlkeys)
     #get the topic from the key
     if keyFromUrl in urlkeys.keys():
         topic =  urlkeys [keyFromUrl]
@@ -112,7 +107,9 @@ def enterchat(data):
     # name, roomid, sid
 
     sid = flask_socketio.rooms()
-    print('........ ',sid)
+    print('........ ',sid[0])
+    print('........ ',flask_socketio.rooms())
+
 
     flask.session['name'] = data['name']
 
@@ -121,15 +118,13 @@ def enterchat(data):
 
 
     if flask.session['room'] not in flask_socketio.rooms():
-
-
         flask_socketio.join_room(flask.session['room'])
 
 
         if flask.session['room'] in rooms:
             rooms[ flask.session['room']].append(flask.session['name'])
         else:
-            rooms[ flask.session['room']] = [flask.session['name']]
+            rooms[ flask.session['room']] = flask.session['name']
 
 
         print("............", rooms)
@@ -169,8 +164,10 @@ def chat(data):
 
 
     sender = flask.session['name']
-    room= flask.session['room']
+    room = flask.session['room']
     message = data['message']
+
+    print('++++ ',room)
 
 
     io.emit("new-chat",  { 'sender': sender, 'message': message } , room=room )
