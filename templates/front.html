@@ -13,17 +13,25 @@
 </head>
 <body>
 
-  <main>
-  <h1>Chat!</h1>
 
-  <form class="pure-form" action="/new-chat" method="POST">
-    <label>Topic:
-        <input name="topic" type="text">
-        <button type="submit" class="pure-button pure-button-primary">Start Chat</button>
-    </label>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
 
-  </form>
-  </main>
+            {% for message in messages %}
+                <div class="flashes">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <main>
+        <h1>Chat!</h1>
+
+        <form class="pure-form" action="/submitNewChat" method="POST">
+            <label>Topic:
+                <input name="topic" type="text">
+                <button type="submit" class="pure-button pure-button-primary">Start Chat</button>
+            </label>
+        </form>
+    </main>
 
 
 </body></html>

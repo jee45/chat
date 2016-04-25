@@ -1,47 +1,57 @@
 <!DOCTYPE html>
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Chat — python</title>
-  {# <link rel="stylesheet" href="chat_room__step_2_files/pure-min.css"> #}
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css" media="screen and (min-width: 48em)">
-  {# <link rel="stylesheet" href="chat_room__step_2_files/font-awesome.css"> #}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Chat — python</title>
+        {# <link rel="stylesheet" href="chat_room__step_2_files/pure-min.css"> #}
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css" media="screen and (min-width: 48em)">
+        {# <link rel="stylesheet" href="chat_room__step_2_files/font-awesome.css"> #}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-  <link rel="stylesheet" href="/static/chat.css">
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="/static/chat.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 
-  {# <script src="chat_room__step_2_files/socket.js"></script> #}
+        {# <script src="chat_room__step_2_files/socket.js"></script> #}
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 
-</head>
-<body>
+    </head>
+    <body>
 
-  <main class="chatwindow unjoined" data-key="{{ urlKey }}" data-sid="{{ sid }}" data-nick="">
-  <div class="chat">
-    <h1 class="topic">{{ topic }}</h1>
-    <div class="join">
-      <form class="join-form">
-        <label for="join-nick">Nickname:</label>
-        <input name="nick" id="join-nick" type="text">
-        <button type="submit" class="pure-button pure-button-primary">Join!</button>
-      </form>
-    </div>
-    <ul class="chat-messages">
-    </ul>
-    <form class="chat-input" action="">
-      <label for="in-msg">Chat:</label>
-      <input name="message" id="in-msg" type="text">
-      <button type="submit" class="pure-button pure-button-primary">send</button>
-    </form>
-  </div>
-  <div class="roster">
-    <ul class="roster-list">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
 
-    </ul>
-  </div>
-  </main>
-  <script src="/static/chat.js"></script>
+                {% for message in messages %}
+                    <div class="flashes">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <main class="chatwindow unjoined" data-key="{{ urlKey }}" data-sid="{{ sid }}" data-nick="">
+            <div class="chat">
+                <h1 class="topic">{{ topic }}</h1>
+                <div class="join">
+                    <form class="join-form">
+                        <label for="join-nick">Nickname:</label>
+                        <input name="nick" id="join-nick" type="text">
+                        <button type="submit" class="pure-button pure-button-primary">Join!</button>
+                    </form>
+                </div>
+                <ul class="chat-messages">
+                </ul>
+                <form class="chat-input" action="">
+                    <label for="in-msg">Chat:</label>
+                    <input name="message" id="in-msg" type="text">
+                    <button type="submit" class="pure-button pure-button-primary">send</button>
+                </form>
+            </div>
+            <div class="roster">
+                <ul class="roster-list">
+                </ul>
+            </div>
+        </main>
+        <script src="/static/chat.js"></script>
 
 
-</body></html>
+    </body>
+</html>

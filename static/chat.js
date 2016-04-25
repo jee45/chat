@@ -63,8 +63,9 @@
         var n = o.attr("data-nick");
 
         if (n) {
-
             console.log("re-joining room %s", t);
+
+
             a.emit("enterchat", {
                 sid: s,
                 room: t,

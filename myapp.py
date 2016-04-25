@@ -1,3 +1,4 @@
+
 import base64
 import uuid
 
@@ -8,15 +9,11 @@ import flask_socketio
 
 
 
-
-
-
-
-
 app = flask.Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'bollocks!'
 io =   flask_socketio.SocketIO(app)
+
 urlkeys = {}
 rooms={}
 
@@ -32,48 +29,80 @@ def index():
 
 
 
-
-@app.route('/new-chat', methods=['POST'])
-def newchat():
+@app.route('/submitNewChat', methods=['POST'])
+def submitNewChat():
 
     # get the topic in the form
     topic = flask.request.form['topic']
 
 
 
-    # create a url hash from the topic
+    # create a url hash from the submitted topic
     keyFromUrl = base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
 
-    # store the hurl hash as the key, and the topic as the value in the rooms dict
+    # add denote this key is a room url
     keyFromUrl = "room"+keyFromUrl
-    urlkeys [keyFromUrl]= topic
+
+
+    # store the hurl hash as the key, and the topic as the value in the rooms dict
+    urlkeys[keyFromUrl]= topic
+
+    print(urlkeys)
 
     # go to the url
     return flask.redirect('/'+keyFromUrl)
 
 
-
 @app.route('/<keyFromUrl>')
 def back(keyFromUrl):
 
-    sid = base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
-
-    sid= 'user'+sid
-    flask.session['sid'] = sid
-    flask.session['room']  = keyFromUrl
+    # if the user is at this page,
+    # they have either created a room
+    # or been sent the url.
 
 
-    print( flask.session['room'] )
+    #if the room is not yet in the list
+    if keyFromUrl not in rooms:
+        rooms[keyFromUrl] = []
 
-    print("urlkeys ****** ",urlkeys)
-    #get the topic from the key
+
+
+
+    #if the key has a topic
     if keyFromUrl in urlkeys.keys():
+
+
+        #store the room in session
+        flask.session['room']  = keyFromUrl
+
+        # get the topic for the url
         topic =  urlkeys [keyFromUrl]
 
-    else:
-        topic =  urlkeys[keyFromUrl] = "no room was created for this yet"
+        # create a session or socket id for the user
+        sid = base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
 
-    return flask.render_template('back.html', urlKey=keyFromUrl , sid = sid, topic=topic)
+        # denote it is a user key
+        sid= 'user' + sid
+
+        # store the user id in session
+        flask.session['sid'] = sid
+
+
+        #send them on thier way
+        return flask.render_template('back.html', urlKey=keyFromUrl , sid = sid, topic=topic)
+
+    else:
+        flask.flash('url not in the keys dict.')
+
+        flask.flash('no sids issued, no room stored in session. ')
+        return flask.redirect('/')
+
+
+
+
+
+
+
 
 
 
@@ -85,78 +114,135 @@ def back(keyFromUrl):
 @io.on('connect' )
 def connect():
 
-    print("connecting you to the users in the room: ", flask.session['room'])
-    print('connected')
-    sid = flask.session['sid']
-    name = ''
-    if 'name' in flask.session:
-        name = flask.session['name']
+    print('socektid # ', flask_socketio.rooms(), 'connecting in  io: .... ')
 
-    flask_socketio.join_room(flask.session['sid'])
-    io.emit("connect", { 'sid': sid, 'room': flask.session['room'], 'name':name } , room=flask.session['sid'])
+    # if they are connected,
+    socketId =  flask_socketio.rooms()
+
+    print(socketId)
+
+    # how to send to just them?
+    io.emit('connect',  room = socketId[0] )
+
+    print('emitting to connect so user can just rejoin the room')
+    print('user is in the  rooms: ', flask_socketio.rooms())
 
 
 
 @io.on('enterchat' )
 def enterchat(data):
 
-
-
-    print('entering chat')
-    # data:
-    # name, roomid, sid
-
-    sid = flask_socketio.rooms()
-    print('........ ',sid[0])
-    print('........ ',flask_socketio.rooms())
-
-
     flask.session['name'] = data['name']
 
 
+    print('entering chat  in io: .... ')
+    print(data)
+
+    print('data sid :', data['sid'])
+    print('sess sid :', flask.session['sid'])
+
+    print('data room :', data['room'])
+    print('sess room :', flask.session['room'])
+
+    print('data name :', data['name'])
+    print('sess name :', flask.session['name'])
+
+    # >>>> >>>> >>>> >>>> >>>> >>>> >>>> >>>>
+    # >>>> >>>> >>>> >>>> >>>> >>>> >>>> >>>>
+
+    # if the room sent is already in thier flask_socketio.rooms()
+    if data['room'] in flask_socketio.rooms():
+        #do nothing
+        print('already in the room. ')
+
+
+    #else
+    else:
 
 
 
-    if flask.session['room'] not in flask_socketio.rooms():
-        flask_socketio.join_room(flask.session['room'])
+        # they join the room
+        flask_socketio.join_room(data['room'])
+        flask_socketio.join_room(data['sid'])
+
+        #emit that they have joined.
+        print("trying to send a message to my room: " , flask.session['sid'] )
+        print("is this room the list of rooms im in? : " , flask_socketio.rooms() )
+
+        io.emit("joined", { "name": data['name']} , room=flask.session['sid'] )
 
 
-        if flask.session['room'] in rooms:
-            rooms[ flask.session['room']].append(flask.session['name'])
+        # if they are already in the list of users in the  room array.
+        print('listing rooms: ' , rooms)
+        print('is the room sent one of them? : ' , data['room'])
+
+        print(data)
+
+        #if the room exists
+        if data['room'] in rooms:
+            #if the user is already in the room
+            if data['name'] in rooms[data['room']]:
+                #do nothing?
+                print( )
+                print('the user:',  data['name'])
+                print('is in the room:',  rooms[data['room']])
+
+
+            # else
+            else:
+
+                # add me to the list of users in the rooms array
+                rooms[data['room']].append(data['name'])
+                print('rooms list: ', rooms)
+
+
+
+
+                # get the names of the others already there.
+                # send it to only them
+                for name in rooms[data['room']]:
+                    if name != data['name']:
+                        io.emit("user-joined", { "name": name}, room=data['sid']  )
+
+
+                # notify the room that i have joined
+                io.emit("user-joined", { "name": data['name']}, room=data['room']  )
+
         else:
-            rooms[ flask.session['room']] = flask.session['name']
+            print('the room doesnt exist')
+
+            # is there something to do id the room doesnt exist yet?
+            # create it in the list ?
+            # add this user to the list ?
+
+            rooms[data['room']] = [data['name']]
+
+            print('rooms list: ', rooms)
 
 
-        print("............", rooms)
-
-
-        #get all the users in this room .
-        #for each user in this room,
-        print('sid: ',flask.session['sid'])
-        for each in rooms[ flask.session['room']]:
-
-            if each != flask.session['name']:
-                io.emit("user-joined", { "name": each} , room=flask.session['sid'])
-
-            # emit a user joined to only me.
-
-        io.emit("joined", { "name": each} , room=flask.session['sid'])
-
-        # for eachuser in theRoom:
-        #     io.emit("user-joined", { "name": data['name']} , room=flask.session['sid'] )
-
-
-        #send to everyone in the room
-        io.emit("user-joined", { "name": data['name']}, room=flask.session['room'], broadcast=False )
+            # notify the room that they have joined
+            io.emit("user-joined", { "name": data['name']}, room=data['room']  )
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+    # <<<< <<<< <<<< <<<< <<<< <<<< <<<< <<<<
+    # <<<< <<<< <<<< <<<< <<<< <<<< <<<< <<<<
 
 @io.on('chat')
 def chat(data):
+    print('submitting new chat  in io: .... ')
 
 
     #print("lkasdf", flask.request.args)
@@ -168,8 +254,7 @@ def chat(data):
     message = data['message']
 
     print('++++ ',room)
-
-
+    print('is it one of these?', flask_socketio.rooms())
     io.emit("new-chat",  { 'sender': sender, 'message': message } , room=room )
 
 
