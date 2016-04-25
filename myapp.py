@@ -62,10 +62,12 @@ def newchat():
 @app.route('/<keyFromUrl>')
 def back(keyFromUrl):
 
+    sid = base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
 
-
-
+    sid= 'user'+sid
+    flask.session['sid'] = sid
     flask.session['room']  = keyFromUrl
+
 
     print( flask.session['room'] )
 
@@ -74,9 +76,9 @@ def back(keyFromUrl):
         topic =  urlkeys [keyFromUrl]
 
     else:
-        topic =  urlkeys [keyFromUrl] = "no room was created for this yet"
+        topic =  urlkeys[keyFromUrl] = "no room was created for this yet"
 
-    return flask.render_template('back.html', urlKey=keyFromUrl , topic=topic)
+    return flask.render_template('back.html', urlKey=keyFromUrl , sid = sid, topic=topic)
 
 
 
@@ -90,6 +92,13 @@ def connect():
 
     print("connecting you to the users in the room: ", flask.session['room'])
     print('connected')
+    sid = flask.session['sid']
+    name = ''
+    if 'name' in flask.session:
+        name = flask.session['name']
+
+    flask_socketio.join_room(flask.session['sid'])
+    io.emit("connect", { 'sid': sid, 'room': flask.session['room'], 'name':name } , room=flask.session['sid'])
 
 
 
@@ -104,9 +113,9 @@ def enterchat(data):
 
     sid = flask_socketio.rooms()
     print('........ ',sid)
-    flask.session['sid'] = sid[0]
+
     flask.session['name'] = data['name']
-    flask.session['room']  = data['room']
+
 
 
 

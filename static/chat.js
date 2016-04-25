@@ -12,7 +12,7 @@
     var t = o.attr("data-key");
     var s = o.attr("data-sid");
 
-    var a = io.connect( );
+    var a = io();
 
 
 
@@ -64,6 +64,7 @@
         var n = o.attr("data-nick");
 
         if (n) {
+
             console.log("re-joining room %s", t);
             a.emit("enterchat", {
                 sid: s,
