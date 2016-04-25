@@ -7,7 +7,8 @@ import flask
 
 import flask_socketio
 
-
+#flask_socketio.emit() # to the current connection
+#io.emit() #broadcast
 
 app = flask.Flask(__name__)
 app.debug = True
