@@ -8,7 +8,8 @@ import flask
 import flask_socketio
 
 #flask_socketio.emit() # to the current connection
-#io.emit() #broadcast
+#io.emit(, room=room) # broadcast
+
 
 app = flask.Flask(__name__)
 app.debug = True
@@ -38,8 +39,9 @@ def submitNewChat():
 
 
 
-    # create a url hash from the submitted topic
+    # create a url hash for the submitted topic
     keyFromUrl = base64.urlsafe_b64encode(uuid.uuid4().bytes)[:12].decode('ascii')
+
 
     # add denote this key is a room url
     keyFromUrl = "room"+keyFromUrl
@@ -253,6 +255,7 @@ def chat(data):
     sender = flask.session['name']
     room = flask.session['room']
     message = data['message']
+
 
     print('++++ ',room)
     print('is it one of these?', flask_socketio.rooms())

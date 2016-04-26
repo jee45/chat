@@ -1,31 +1,14 @@
-<!DOCTYPE html>
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css" media="screen and (min-width: 48em)">
-
-  <link rel="stylesheet" href="/static/chat.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 
 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+    from front
 
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
+    <main class = "light">
+        <h1 class="mid">Chat!</h1>
 
-            {% for message in messages %}
-                <div class="flashes">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <main>
-        <h1>Chat!</h1>
-
-        <form class="pure-form" action="/submitNewChat" method="POST">
+        <form class="pure-form mid" action="/submitNewChat" method="POST">
             <label>Topic:
                 <input name="topic" type="text">
                 <button type="submit" class="pure-button pure-button-primary">Start Chat</button>
@@ -34,4 +17,7 @@
     </main>
 
 
-</body></html>
+
+
+{% endblock %}
+

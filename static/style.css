@@ -1,0 +1,137 @@
+html{
+    font-family: Arial, Helvetica, Clean, sans-serif
+}
+body{
+    background: #fff17c;
+    color: darkcyan;
+
+}
+
+h1{
+    text-align: center;
+}
+.light h3{
+    text-align: center;
+    font-family: Verdana, Geneva;
+}
+
+.light{
+    background: white;
+    font-size: 25px;
+
+}
+
+.light.complement{
+
+}
+
+.mid{
+    background: #fff17c;
+    //background: #ffe347;
+
+}
+
+.mid.complement{
+
+}
+
+.dark{
+
+}
+
+.dark.complement{
+
+}
+
+
+:not(ul){
+    border: 1px solid rgba(142, 142, 142, 0.63);
+    margin:3px ;
+    padding: 6px;
+
+}
+
+a {
+
+    background: darkcyan;
+
+}
+
+.flashes{
+    background: #a10109;
+    color: white;
+
+}
+
+
+button:active {
+    background: orange;
+
+}
+
+
+
+.title{
+    font-size: 35px;
+    text-align: left;
+}
+.entryhead{
+    background:white;
+    font-size: 13px;
+    text-align: left;
+}
+.entry{
+    font-size: 17px;
+    text-align: left;
+
+}
+
+
+h1.title.article {
+    font-size: 20px;
+    text-align: left;
+
+}
+
+.pure-button{
+
+    background: darkcyan;
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.center{
+    display: table;
+    margin: 0 auto;
+
+
+}
+
+
+
+.left{
+    text-align: left;
+
+
+}
+
+label{
+    border: 0px;
+
+}
+
+.url{
+     background: #c5af37;
+}
+
+.photo{
+    width:300px;
+    height: auto;
+}
+
+.windowSize{
+    width: 100%;
+    height: auto;
+}
+

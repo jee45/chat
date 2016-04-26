@@ -98,7 +98,7 @@
 
     a.on("new-chat", function(n) {
         console.log('enterying new chat');
-        $("<li>").addClass("message").append($("<span>").addClass("user").text(n.sender)).append(": ").append($("<span>").addClass("text").text(n.message)).appendTo($(".chat-messages"))
+        $("<li>").addClass("message").addClass("mid").append($("<span>").addClass("user").text(n.sender)).append(": ").append($("<span>").addClass("text").text(n.message)).prependTo($(".chat-messages"))
 
 
     });
