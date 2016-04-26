@@ -45,9 +45,11 @@ h1{
 
 
 :not(ul){
-    border: 1px solid rgba(142, 142, 142, 0.63);
-    margin:3px ;
+    /*border: 1px solid rgba(142, 142, 142, 0.63);*/
+    /*margin:3px ;*/
     padding: 6px;
+
+
 
 }
 
@@ -135,3 +137,13 @@ label{
     height: auto;
 }
 
+
+
+.small > * {
+  box-sizing: border-box;
+}
+
+.message{
+
+    border: 1px solid white;
+}
