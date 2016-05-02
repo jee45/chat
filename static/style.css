@@ -147,3 +147,53 @@ label{
 
     border: 1px solid white;
 }
+
+
+
+
+
+
+
+#board {
+    /* this merges adjacent cell borders! */
+    border-collapse: collapse;
+}
+#board .cell {
+    border: 1px solid rgba(142, 142, 142, 0.63);
+    border-radius: 50%;
+    background: white;
+
+    /* big letters */
+    font-family: "Avant Garde", sans-serif;
+    font-size: 40px;
+    /* center the letters */
+    text-align: center;
+    vertical-align: middle;
+    /* make the cells nice and big */
+    width: 64px;
+    height: 64px;
+    border: solid 1px black;
+    /* empty cells are pointerable */
+    cursor: pointer;
+}
+
+#board .cell.x, #board .cell.o {
+    /* used cells have not-allowed */
+    cursor: not-allowed;
+}
+#board .cell.winning {
+    background-color: green;
+}
+
+
+
+
+
+
+
+.circle{
+    border-radius: 50%;
+	width: 200px;
+	height: 200px;
+}
+
