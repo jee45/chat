@@ -27,7 +27,7 @@ from flask_script import Manager
 
 # TODO Change this to import from your main application file
 import myapp as app_module
-myapp = app_module.app
+app = app_module.app
 
 
 if hasattr(app_module, 'manager'):
