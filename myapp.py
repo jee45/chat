@@ -14,7 +14,7 @@ import flask_socketio
 app = flask.Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'bollocks!'
-io =   flask_socketio.SocketIO(app)
+io = flask_socketio.SocketIO(app)
 
 urlkeys = {}
 rooms={}
