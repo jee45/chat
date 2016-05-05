@@ -115,6 +115,163 @@ def back(keyFromUrl):
 
 
 
+@io.on('rematchaccepted')
+def rematchaccepted(data):
+
+    print(data)
+    print(game[flask.session['room']])
+    print(".... size of game: ", len(game[flask.session['room']]))
+    flask_socketio.emit('resetGameboard')
+
+    # if array < 2
+    if len(game[flask.session['room']]) <2:
+        print('in rematch accepted, room <2 ')
+
+        #the other player said they want dont want to play, but this one does.
+
+        io.emit('observing', {'getNewPlayer':True}, room='observing'+flask.session['room'])
+        return
+
+
+    #if array > 4
+    elif len(game[flask.session['room']]) > 4:
+        print('in rematch accepted, room >4 ')
+
+
+        # wipe the game history
+        game[flask.session['room']] = game[flask.session['room']][0:4]
+        # append 2 elements
+        print (game[flask.session['room']])
+        game[flask.session['room']][2] = ''
+        game[flask.session['room']][3] = ''
+
+        print (game[flask.session['room']])
+
+
+        #if the accepting player is at index 0
+        if data['turn'] =='O':
+            print('setting up to rematch for o')
+            # set element 2 to 'rematch'
+            game[flask.session['room']][2] = 'rematch'
+
+            print(game[flask.session['room']])
+        #else the accepting player is at index 1
+        elif data['turn'] =='X':
+            # set element 3 to 'rematch'
+            print('setting up to rematch for x')
+            game[flask.session['room']][3] = 'rematch'
+            print(game[flask.session['room']])
+
+    elif  len(game[flask.session['room']]) == 4:
+
+        print('in rematch accepted, room ==4 ')
+
+        #if the accepting player is at index 0
+        if data['turn'] =='O':
+            print('setting up to rematch for o')
+            # set element 2 to 'rematch'
+            game[flask.session['room']][2] = 'rematch'
+
+            print(game[flask.session['room']])
+        #else the accepting player is at index 1
+        elif data['turn'] =='X':
+            # set element 3 to 'rematch'
+            print('setting up to rematch for x')
+            game[flask.session['room']][3] = 'rematch'
+            print(game[flask.session['room']])
+    print(game[flask.session['room']])
+
+    # if element[2] and element[3] is 'rematch'
+    if game[flask.session['room']][2] == 'rematch' and game[flask.session['room']][3] == 'rematch':
+
+        # emit to the room the reset.
+        io.emit('otherplayeracceptedrematch', room = flask.session['room'])
+
+        # remove the 'rematch elelemts'
+        game[flask.session['room']] = game[flask.session['room']][0:2]
+
+        print(game[flask.session['room']])
+
+
+
+
+
+
+
+@io.on('dontrematch')
+def dontrematch(data ):
+    print("in dont rematch", data)
+
+    #if array < 2
+    if len(game[flask.session['room']]) <2:
+        # find 2 other  players from the room
+        print("in length < 2", data)
+
+
+
+        # io.emit('observing', {'getNewPlayer':True}, room='observing'+flask.session['room'])
+        # game[flask.session['room']].remove(flask.session['sid'])
+        # flask_socketio.join_room('observing'+flask.session['room'])
+        #
+        # #io.emit('playersleftgame')
+
+        io.emit('resetGameboard')
+        io.emit('playersleftgame')
+        del game[flask.session['room']]
+
+
+
+
+
+
+
+    #if array > 4
+    elif len(game[flask.session['room']]) >4:
+
+        # wipe the game history
+        print("in length > 4", data)
+
+        print (">",game[flask.session['room']])
+        game[flask.session['room']] = game[flask.session['room']][0:2]
+        print (">",game[flask.session['room']])
+        game[flask.session['room']].remove(flask.session['sid'])
+        print (">",game[flask.session['room']])
+        flask_socketio.join_room('observing'+flask.session['room'])
+        flask_socketio.emit('resetGameboard')
+
+
+
+        #io.emit('observing', {'getNewPlayer':True}, room='observing'+flask.session['room'])
+
+        # remove this player from the game
+        print (game[flask.session['room']])
+
+
+
+    elif  len(game[flask.session['room']]) ==4 :
+
+        if game[flask.session['room']][2] == 'rematch' or game[flask.session['room']][3]== 'rematch':
+            # one player has already said they want to play, but this one doesnt.
+            # find an opponent for them .
+
+            print("in length == 4", data)
+
+            game[flask.session['room']].remove(flask.session['sid'])
+            game[flask.session['room']] = game[flask.session['room']][0:1]
+
+            flask_socketio.join_room('observing'+flask.session['room'])
+
+
+            io.emit('observing', {'getNewPlayer':True}, room='observing'+flask.session['room'])
+            flask_socketio.emit('resetGameboard')
+
+
+
+
+
+
+
+
 
 
 @io.on('submitmove' )
@@ -153,8 +310,8 @@ def submitMove(data):
 
 @io.on('disconnect' )
 def disconnect():
-    print(flask_socketio.rooms())
-    print("someone disconnected. ")
+    print("someone in these rooms disconected", flask_socketio.rooms())
+
 
 
     for room in flask_socketio.rooms():
@@ -202,30 +359,12 @@ def connect():
 
 
 
+
+
 @io.on('enterchat' )
 def enterchat(data):
 
     flask.session['name'] = data['name']
-
-    #
-    # print('entering chat  in io: .... ')
-    # print(data)
-    #
-    # print('data sid :', data['sid'])
-    # print('sess sid :', flask.session['sid'])
-    #
-    # print('data room :', data['room'])
-    # print('sess room :', flask.session['room'])
-    #
-    # print('data name :', data['name'])
-    # print('sess name :', flask.session['name'])
-
-    # >>>> >>>> >>>> >>>> >>>> >>>> >>>> >>>>
-    # >>>> >>>> >>>> >>>> >>>> >>>> >>>> >>>>
-
-
-
-
 
 
 
@@ -237,8 +376,6 @@ def enterchat(data):
 
     #else
     else:
-
-
 
 
 
@@ -347,6 +484,30 @@ def enterchat(data):
 
 
 
+
+
+
+@io.on('newchallenger')
+def newchallenger():
+    print('in challenger ')
+    print(game[flask.session['room']])
+    if len(game[flask.session['room']]) < 4:
+
+        print('trying to join game', game[flask.session['room']])
+        #join game.
+        game[flask.session['room']].append(flask.session['sid'])
+        flask_socketio.leave_room('observing'+flask.session['room'])
+        io.emit('anotherplayerentered', {'myTurnWillBe':'O'}, room = game[flask.session['room']][0] )
+        io.emit('anotherplayerentered', {'myTurnWillBe':'X'}, room = game[flask.session['room']][1] )
+        print('trying to join game', game[flask.session['room']])
+
+
+        # emit to other player that a new player accepted
+
+        #emit to this player what thier game peice will be
+        #leave observing
+
+        pass
 
 
 

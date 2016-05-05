@@ -27,7 +27,7 @@ h1{
 
 .mid{
     background: #fff17c;
-    //background: #ffe347;
+    /*//background: #ffe347;*/
 
 }
 
@@ -177,9 +177,17 @@ label{
     cursor: pointer;
 }
 
-#board .cell.x, #board .cell.o {
+#board .cell.x {
     /* used cells have not-allowed */
     cursor: not-allowed;
+    background-color: #951e05;
+    color: #951e05;
+}
+#board .cell.o  {
+    /* used cells have not-allowed */
+    cursor: not-allowed;
+    background-color: #0f2d95;
+    color: #0f2d95;
 }
 #board .cell.winning {
     background-color: green;
@@ -197,3 +205,14 @@ label{
 	height: 200px;
 }
 
+.cell.x{
+    background-color: #951e05;
+    /*font-color: #951e05;*/
+
+}
+
+.cell.o{
+    background-color: #0f2d95;
+    /*font-color: #0f2d95;*/
+
+}

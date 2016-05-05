@@ -340,18 +340,78 @@ $(document).ready(function() {
                 $(id).addClass('winning');
             }
         }
+
+        offerRematch();
     }
+
+
+    function offerRematch(){
+        console.log("rematch")
+        $("<button>").addClass("rematch").text('rematch?').prependTo($('#status'))
+        $(".rematch").on('click', acceptRematch);
+        $("<button>").addClass("dontrematch").text(' dont rematch?').prependTo($('#status'))
+        $(".dontrematch").on('click', dontrematch);
+
+    }
+
+    function dontrematch(){
+        $('#status').text('you have chosen NOT to rematch.');
+        a.emit('dontrematch', {'turn':turn});
+
+    }
+
+
+
+    function acceptRematch(){
+        console.log('rematch !!!!!!!!!!!!!!!!!!');
+
+        $(".rematch").remove();
+        $('#status').text('you have accepted chosen to rematch. waiting fo opponenet to accept rematch');
+
+        a.emit('rematchaccepted',{'turn':myTurnWillBe});
+
+
+
+    }
+
+
+
+
+    function resetGameboard(){
+        for (var i = 0; i < 6; i++){
+            for (var j = 0; j < 6; j++){
+                $('#cell-' + i + '-' + j).text('').removeClass('x').removeClass('o').removeClass('winning');
+;
+                board[i][j] = null;
+            }
+        }
+        waiting = true;
+
+    }
+
+
+
+
+    a.on("otherplayeracceptedrematch", function (d) {
+        console.log("otherplayeracceptedrematch");
+        resetGameboard();
+        changePlayer();
+    });
+
 
 
     a.on("anotherplayerentered", function (data) {
         console.log("anotherplayerentered");
         console.log(data);
 
+        resetGameboard();
         myTurnWillBe = data.myTurnWillBe;
         changePlayer();
 
 
     });
+
+
 
 
     a.on("otherplayermademove", function (d) {
@@ -367,22 +427,43 @@ $(document).ready(function() {
         console.log("someoneleftaroom");
 
     });
-    a.on("playerleftgame", function () {
-        $('#status').text('a player left the room. the game is over. fart. ');
+
+    function backHome(){
+        window.location.assign("/")
+    }
+
+    a.on("playersleftgame", function () {
+        $('#status').text('players left the room. the game is over.this room is dead. redirecting you to "/"');
+
+        setTimeout(backHome, 5000);
+
     });
 
     a.on("observing", function (d) {
         console.log("observing");
         console.log(d);
+        if(d.getNewPlayer){
+            console.log("offering to enter match. ");
 
+            $("<button>").addClass("newchallenger").text('want to play?').prependTo($('#status'))
+            $(".newchallenger").on('click', newchallenger);
 
-        waiting=true;
-        turn = d.turn
-        makeMove(d.row, d.col);
-        $('#status').text('you are only observing. it is Player ' + turn + ' turn.');
-
+        }else{
+            waiting=true;
+            turn = d.turn
+            makeMove(d.row, d.col);
+            $('#status').text('you are only observing. it is Player ' + turn + ' turn.');
+        }
 
     });
+
+    a.on('resetGameboard', resetGameboard);
+
+    function newchallenger(){
+        console.log("trying to be the new challenger. ");
+        a.emit('newchallenger');
+    }
+
 
     function makeMove(row, col) {
 
