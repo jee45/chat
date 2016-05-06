@@ -201,8 +201,8 @@ $(document).ready(function() {
         var i, j;
 
         // count empties
-        for (i = 0; i < 5; i++) {
-            for (j = 0; j < 5; j++) {
+        for (i = 0; i < 6; i++) {
+            for (j = 0; j < 6; j++) {
                 if (board[i][j] === null) {
                     empties += 1;
                 }
@@ -211,94 +211,158 @@ $(document).ready(function() {
 
 
         //rows cols diags
-        for (i = 1; i < 5; i++) {
+        for (i = 1; i < 4; i++) {
 
-            for (j = 1; j < 5; j++) {
+            for (j = 1; j < 4; j++) {
 
-
-                if (board[i][j] && board[i][j] === board[i - 1][j - 1] && board[i][j] === board[i + 1][j + 1]) {
+                 if (board[i][j] && board[i][j] === board[i - 1][j - 1] && board[i][j] === board[i + 1][j + 1]   && board[i][j] === board[i + 2][j + 2] ) {
                     console.log('sloping down and right')
 
                     status = {
                         winner: board[i][j],
-                        rows: [i - 1, i, i + 1],
-                        cols: [j - 1, j, j + 1]
+                        rows: [i - 1, i, i + 1,  i + 2],
+                        cols: [j - 1, j, j + 1, j + 2]
                     };
 
-
-                } else if (board[i][j] && board[i][j] === board[i - 1][j + 1] && board[i][j] === board[i + 1][j - 1]) {
+                }  else if (board[i][j+1] && board[i][j+1]  === board[i - 1][j + 2] && board[i][j+1]  === board[i + 1][j]  && board[i][j+1]  === board[i + 2][j - 1]) {
                     console.log('sloping down and left')
                     status = {
-                        winner: board[i][j],
-                        rows: [i - 1, i, i + 1],
-                        cols: [j + 1, j, j - 1]
+                        winner: board[i][j+1],
+                        rows: [i - 1, i, i + 1, i+2],
+                        cols: [j + 2, j + 1, j, j-1]
                     };
 
-
-                } else if (board[i][j] && board[i][j] === board[i - 1][j] && board[i][j] === board[i + 1][j]) {
-                    console.log('up and down')
+                } else if (board[i][j] && board[i][j] === board[i - 1][j] && board[i][j] === board[i + 1][j] && board[i][j] === board[i + 2][j]) {
+                    console.log('up and down 1')
 
                     status = {
                         winner: board[i][j],
-                        rows: [i - 1, i, i + 1],
-                        cols: [j, j, j]
+                        rows: [i - 1, i, i + 1, i+2],
+                        cols: [j,     j,     j,   j]
                     };
 
-                } else if (board[i][j] && board[i][j] === board[i][j - 1] && board[i][j] === board[i][j + 1]) {
-                    console.log('side ways')
+                } else if (board[i][j+1] && board[i][j+1] === board[i - 1][j+1] && board[i][j+1] === board[i + 1][j+1] &&board[i][j+1] === board[i + 2][j+1]) {
+                    console.log('up and down 2')
+
+                    status = {
+                        winner: board[i][j+1],
+                        rows: [i - 1,   i, i + 1, i+2 ],
+                        cols: [j + 1, j+1, j+1, j+1]
+                    };
+
+                } else if (board[i][j] && board[i][j] === board[i][j - 1] && board[i][j] === board[i][j + 1]  && board[i][j] === board[i][j + 2]) {
+                    console.log('side ways 1')
 
                     status = {
                         winner: board[i][j],
-                        rows: [i, i, i],
-                        cols: [j - 1, j, j + 1]
+                        rows: [i, i, i, i],
+                        cols: [j - 1, j, j + 1, j+2]
+                    };
+
+                } else if (board[i+1][j] && board[i+1][j] === board[i+1][j - 1] && board[i+1][j] === board[i+1][j + 1]  && board[i+1][j] === board[i+1][j + 1] && board[i+1][j] === board[i+1][j + 2]) {
+                    console.log('side ways 2')
+
+                    status = {
+                        winner: board[i+1][j],
+                        rows: [i+1, i+1, i+1, i+1],
+                        cols: [j - 1, j, j + 1, j+2]
                     };
 
                 }
 
 
+
+
+
+
+                //
+                //
+                //
+                //
+                //if (board[i][j] && board[i][j] === board[i - 1][j - 1] && board[i][j] === board[i + 1][j + 1]) {
+                //    console.log('sloping down and right')
+                //
+                //    status = {
+                //        winner: board[i][j],
+                //        rows: [i - 1, i, i + 1],
+                //        cols: [j - 1, j, j + 1]
+                //    };
+                //
+                //} else if (board[i][j] && board[i][j] === board[i - 1][j + 1] && board[i][j] === board[i + 1][j - 1]) {
+                //    console.log('sloping down and left')
+                //    status = {
+                //        winner: board[i][j],
+                //        rows: [i - 1, i, i + 1],
+                //        cols: [j + 1, j, j - 1]
+                //    };
+                //
+                //} else if (board[i][j] && board[i][j] === board[i - 1][j] && board[i][j] === board[i + 1][j]) {
+                //    console.log('up and down')
+                //
+                //    status = {
+                //        winner: board[i][j],
+                //        rows: [i - 1, i, i + 1],
+                //        cols: [j, j, j]
+                //    };
+                //
+                //} else if (board[i][j] && board[i][j] === board[i][j - 1] && board[i][j] === board[i][j + 1]) {
+                //    console.log('side ways')
+                //
+                //    status = {
+                //        winner: board[i][j],
+                //        rows: [i, i, i],
+                //        cols: [j - 1, j, j + 1]
+                //    };
+                //
+                //}
+
             }
+
         }
 
-        //edges
-        for (i = 0; i < 4; i++) {
 
-            if (board[0][i] && board[0][i] === board[0][i + 1] && board[0][i] === board[0][i + 2]) {
+
+
+        //edges
+        for (i = 0; i < 3; i++) {
+
+            if (board[0][i] && board[0][i] === board[0][i + 1] && board[0][i] === board[0][i + 2]  && board[0][i] === board[0][i + 3] ) {
 
                 console.log('top edge')
                 status = {
                     winner: board[0][i],
-                    rows: [0, 0, 0],
-                    cols: [i, i + 1, i + 2]
+                    rows: [0, 0, 0, 0],
+                    cols: [i, i + 1, i + 2, i+3]
                 };
 
 
-            } else if (board[5][i] && board[5][i] === board[5][i + 1] && board[5][i] === board[5][i + 2]) {
+            } else if (board[5][i] && board[5][i] === board[5][i + 1] && board[5][i] === board[5][i + 2] && board[5][i] === board[5][i + 3]) {
                 console.log('bottom edge')
                 status = {
                     winner: board[5][i],
-                    rows: [5, 5, 5],
-                    cols: [i, i + 1, i + 2]
+                    rows: [5, 5, 5, 5],
+                    cols: [i, i + 1, i + 2, i+3]
                 };
 
 
-            } else if (board[i][0] && board[i][0] === board[i + 1][0] && board[i][0] === board[i + 2][0]) {
+            } else if (board[i][0] && board[i][0] === board[i + 1][0] && board[i][0] === board[i + 2][0] && board[i][0] === board[i + 3][0]) {
 
 
                 console.log('left edge')
 
                 status = {
                     winner: board[i][0],
-                    rows: [i, i + 1, i + 2],
-                    cols: [0, 0, 0]
+                    rows: [i, i + 1, i + 2, i+3],
+                    cols: [0, 0, 0, 0]
                 };
 
 
-            } else if (board[i][5] && board[i][5] === board[i + 1][5] && board[i][5] === board[i + 2][5]) {
+            } else if (board[i][5] && board[i][5] === board[i + 1][5] && board[i][5] === board[i + 2][5] && board[i][5] === board[i + 3][5]) {
                 console.log('right edge')
                 status = {
                     winner: board[i][5],
-                    rows: [i, i + 1, i + 2],
-                    cols: [5, 5, 5]
+                    rows: [i, i + 1, i + 2, i + 3],
+                    cols: [5, 5, 5, 5]
                 };
 
 
@@ -333,6 +397,8 @@ $(document).ready(function() {
         } else {
             $('#status').text('Player ' + winner.winner + ' has won!');
             // now we need to mark!
+
+            console.log(winner);
             for (var i = 0; i < 5; i++) {
                 var col = winner.cols[i];
                 var row = winner.rows[i];

@@ -1,5 +1,6 @@
 
 import base64
+
 import uuid
 
 import flask
@@ -102,16 +103,6 @@ def back(keyFromUrl):
 
         flask.flash('no sids issued, no room stored in session. ')
         return flask.redirect('/')
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -506,19 +497,6 @@ def newchallenger():
 
         #emit to this player what thier game peice will be
         #leave observing
-
-        pass
-
-
-
-
-
-
-
-
-
-
-
 
 
     # <<<< <<<< <<<< <<<< <<<< <<<< <<<< <<<<
